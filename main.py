@@ -12,6 +12,7 @@ bot = commands.Bot(command_prefix="!")
 
 # Command to roll the dice
 
+#Need to work on better way to call the command (userfriendly)
 @bot.command()
 async def d(ctx, dice, howManyRolls="", modifier="", advantage=""):
     # Checking if dice isn't too big
