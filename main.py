@@ -13,7 +13,7 @@ bot = commands.Bot(command_prefix="!")
 # Command to roll the dice
 
 @bot.command()
-async def d(ctx, dice, howManyRolls="", modifier=""):
+async def d(ctx, dice, howManyRolls="", modifier="", advantage=""):
     # Checking if dice isn't too big
     if int(dice) > 100:
         await ctx.send("To big dice to roll!")
@@ -31,16 +31,42 @@ async def d(ctx, dice, howManyRolls="", modifier=""):
         if howManyRolls == "":
             choice = random.choices(seq, weights)
             roll = "" + str(choice[0])
-            await ctx.send(roll)
 
         else:
             i = 0
-            sum = 0
+            roll = 0
             while i < int(howManyRolls):
                 choice = random.choices(seq, weights)
-                sum = sum + choice[0]
+                roll = roll + choice[0]
                 i += 1
-            await ctx.send(sum)
+
+        if modifier != "":
+            if modifier[0] == "+":
+                roll = roll + int(modifier[1:])
+            else:
+                roll = roll - int(modifier[1:])
+
+        if advantage == "A":
+            choice1 = random.choices(seq, weights)
+            choice2 = random.choices(seq, weights)
+            if choice1 > choice2:
+                roll = choice1
+            elif choice2 > choice1:
+                roll = choice2
+            elif choice2 == choice1:
+                roll = choice2
+
+        elif advantage == "D":
+            choice1 = random.choices(seq, weights)
+            choice2 = random.choices(seq, weights)
+            if choice1 > choice2:
+                roll = choice2
+            elif choice2 > choice1:
+                roll = choice1
+            elif choice2 == choice1:
+                roll = choice2
+
+        await ctx.send(roll)
 
 
 bot.run(TOKEN)
