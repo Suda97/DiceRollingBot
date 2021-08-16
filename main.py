@@ -66,6 +66,7 @@ async def d(ctx, dice, howManyRolls="", modifier="", advantage=""):
             elif choice2 == choice1:
                 roll = choice2
 
+
         await ctx.send(roll)
 
 
