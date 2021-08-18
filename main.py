@@ -1,6 +1,6 @@
 import os
 import random
-
+import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -32,7 +32,7 @@ async def d(ctx, dice, howManyRolls="", modifier="", advantage=""):
         if howManyRolls == "":
             choice = random.choices(seq, weights)
             roll = "" + str(choice[0])
-
+        # Rolling and suming results
         else:
             i = 0
             roll = 0
@@ -40,34 +40,36 @@ async def d(ctx, dice, howManyRolls="", modifier="", advantage=""):
                 choice = random.choices(seq, weights)
                 roll = roll + choice[0]
                 i += 1
-
+        # Adding modifier to roll
         if modifier != "":
             if modifier[0] == "+":
                 roll = roll + int(modifier[1:])
             else:
                 roll = roll - int(modifier[1:])
-
+        # Disadvantage and andvantage roll
         if advantage == "A":
             choice1 = random.choices(seq, weights)
             choice2 = random.choices(seq, weights)
             if choice1 > choice2:
-                roll = choice1
+                roll = "" + str(choice1[0])
             elif choice2 > choice1:
-                roll = choice2
+                roll = "" + str(choice2[0])
             elif choice2 == choice1:
-                roll = choice2
+                roll = "" + str(choice2[0])
 
         elif advantage == "D":
             choice1 = random.choices(seq, weights)
             choice2 = random.choices(seq, weights)
             if choice1 > choice2:
-                roll = choice2
+                roll = "" + str(choice2[0])
             elif choice2 > choice1:
-                roll = choice1
+                roll = "" + str(choice1[0])
             elif choice2 == choice1:
-                roll = choice2
+                roll = "" + str(choice2[0])
 
-        await ctx.send(roll)
+        embed = discord.Embed(title="Bot Roll", color=0x874efe)
+        embed.add_field(name="Your roll: ", value=roll, inline=False)
+        await ctx.send(embed=embed)
 
 
 bot.run(TOKEN)
