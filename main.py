@@ -121,13 +121,17 @@ async def d(ctx, die):
                 output = output + "-" + str(modifier)
 
         output = output + "=" + str(roll)
-        if (advantageTest == 1 or advantageTest == 2) and howManyRolls == "2":
+        if advantageTest == 1 and howManyRolls == "2":
             embed = discord.Embed(title="Bot Roll", color=0x874efe)
-            embed.add_field(name="Your roll: ", value=output, inline=False)
+            embed.add_field(name="Advantage roll: ", value=output, inline=False)
+            await ctx.send(embed=embed)
+        elif advantageTest == 2 and howManyRolls == "2":
+            embed = discord.Embed(title="Bot Roll", color=0x874efe)
+            embed.add_field(name="Disadvantage roll: ", value=output, inline=False)
             await ctx.send(embed=embed)
         elif advantageTest == 0:
             embed = discord.Embed(title="Bot Roll", color=0x874efe)
-            embed.add_field(name="Your roll: ", value=output, inline=False)
+            embed.add_field(name="Roll: ", value=output, inline=False)
             await ctx.send(embed=embed)
 
 
