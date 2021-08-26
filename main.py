@@ -110,9 +110,9 @@ async def d(ctx, die):
                     await ctx.send(embed=embed)
             else:
                 choice = random.choices(seq, weights)
-                if int(dice) == 20 and choice[0] == 20:
+                if int(dice) == choice[0]:
                     natural = 1
-                elif int(dice) == 20 and choice[0] == 1:
+                elif choice[0] == 1:
                     natural = 2
                 roll = roll + choice[0]
                 output = output + str(roll)
