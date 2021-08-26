@@ -11,23 +11,36 @@ bot = commands.Bot(command_prefix="!")
 
 
 # Command to roll the dice
-
-@bot.command()
+@bot.command(pass_context=True)
 async def d(ctx, die):
+
+    # Getting username and avatar of user which sent the message
+    member = ctx.message.author
+    userAvatar = member.avatar_url
+    user = ctx.message.author.display_name
+    await ctx.message.delete()
+
+    # Variables
     i = 0
     dice = ""
     howManyRolls = ""
     modifier = ""
     modifierTest = True
     advantageTest = 0
+    natural = 0
+    # Filling all the variables
     while i < len(die):
         if die[i] == "d":
             i += 1
             while i < len(die):
+
+                # Checking (+ Modifier)
                 if die[i] == "+":
                     modifierTest = True
                     i += 1
                     while i < len(die):
+
+                        # Checking if it should be adv or disadv roll
                         if die[i] == "A" or die[i] == "a":
                             advantageTest = 1
                         elif die[i] == "D" or die[i] == "d":
@@ -35,6 +48,8 @@ async def d(ctx, die):
                         else:
                             modifier = modifier + die[i]
                         i += 1
+
+                # Checking (- Modifier)
                 elif die[i] == "-":
                     modifierTest = False
                     i += 1
@@ -47,9 +62,17 @@ async def d(ctx, die):
                             modifier = modifier + die[i]
                         i += 1
 
+                # How big is dice for example d20 or d4
                 else:
-                    dice = dice + die[i]
+                    if die[i] == "A" or die[i] == "a":
+                        advantageTest = 1
+                    elif die[i] == "D" or die[i] == "d":
+                        advantageTest = 2
+                    else:
+                        dice = dice + die[i]
                 i += 1
+
+        # How many dices to roll
         else:
             howManyRolls = howManyRolls + die[i]
         i += 1
@@ -58,9 +81,13 @@ async def d(ctx, die):
     roll = 0
 
     # Checking if dice isn't too big
-    if int(dice) > 100:
-        await ctx.send("To big dice to roll!")
+    if int(dice) > 200:
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name=die + "Roll: ", value="Too big dice to roll!", inline=False)
+        embed.set_author(name=user, icon_url=userAvatar)
+        await ctx.send(embed=embed)
     else:
+
         # Creating sequence of values from dice to set their weights for random.choices
         seq = []
         weights = []
@@ -70,34 +97,85 @@ async def d(ctx, die):
             weights.append(weight)
 
         # Checking if second argument is empty (yes: roll only once, no: roll (howManyRolls) many times)
-        if howManyRolls == "":
+        if howManyRolls == "" or howManyRolls == "1":
             if advantageTest == 1 or advantageTest == 2:
+
+                # It is not possible to do adv/disadv roll when $howManyRolls is less then 2 or more then 2
                 if howManyRolls != "2":
-                    await ctx.send("You should roll only 2 dices when doing advantage check!")
+                    embed = discord.Embed(color=0x874efe)
+                    embed.add_field(name=die + " Roll: ", value="You should roll 2 dices when doing adv/disadv "
+                                                                "roll!",
+                                    inline=False)
+                    embed.set_author(name=user, icon_url=userAvatar)
+                    await ctx.send(embed=embed)
             else:
                 choice = random.choices(seq, weights)
+                if int(dice) == 20 and choice[0] == 20:
+                    natural = 1
+                elif int(dice) == 20 and choice[0] == 1:
+                    natural = 2
                 roll = roll + choice[0]
                 output = output + str(roll)
+
         # Rolling and summing results
-        else:
+        elif int(howManyRolls) > 1:
             if advantageTest == 1 or advantageTest == 2:
+
+                # It is not possible to do adv/disadv roll when $howManyRolls is less then 2 or more then 2
                 if howManyRolls != "2":
-                    await ctx.send("You should roll only 2 dices when doing advantage check!")
+                    embed = discord.Embed(color=0x874efe)
+                    embed.add_field(name=die + " Roll: ", value="You should roll 2 dices when doing adv/disadv "
+                                                                "roll!",
+                                    inline=False)
+                    embed.set_author(name=user, icon_url=userAvatar)
+                    await ctx.send(embed=embed)
+
+                # Adv/disadv roll
                 else:
                     choice = random.choices(seq, weights)
                     adv1 = choice[0]
                     choice = random.choices(seq, weights)
                     adv2 = choice[0]
+
                     if advantageTest == 1:
                         if adv1 > adv2:
                             roll = roll + adv1
-                        else:
+                            if adv1 == int(dice):
+                                natural = 1
+                            elif adv1 == 1:
+                                natural = 2
+                        elif adv2 > adv1:
                             roll = roll + adv2
+                            if adv2 == int(dice):
+                                natural = 1
+                            elif adv2 == 1:
+                                natural = 2
+                        else:
+                            roll = roll + adv1
+                            if adv1 == int(dice):
+                                natural = 1
+                            elif adv1 == 1:
+                                natural = 2
+
                     elif advantageTest == 2:
                         if adv1 < adv2:
                             roll = roll + adv1
-                        else:
+                            if adv1 == int(dice):
+                                natural = 1
+                            elif adv1 == 1:
+                                natural = 2
+                        elif adv2 < adv1:
                             roll = roll + adv2
+                            if adv2 == int(dice):
+                                natural = 1
+                            elif adv2 == 1:
+                                natural = 2
+                        else:
+                            roll = roll + adv1
+                            if adv1 == int(dice):
+                                natural = 1
+                            elif adv1 == 1:
+                                natural = 2
                     output = "First roll: " + str(adv1) + "\nSecond roll: " + str(adv2) + "\n(" + str(roll) + ")"
             else:
                 output = "("
@@ -105,12 +183,15 @@ async def d(ctx, die):
                 choice = random.choices(seq, weights)
                 roll = roll + choice[0]
                 output = output + str(choice[0])
+
+                # Rolling $howManyRolls times and summing all of the results
                 while i < int(howManyRolls):
                     choice = random.choices(seq, weights)
                     roll = roll + choice[0]
                     output = output + "+" + str(choice[0])
                     i += 1
                 output = output + ")"
+
         # Adding modifier to roll
         if modifier != "":
             if modifierTest:
@@ -121,17 +202,33 @@ async def d(ctx, die):
                 output = output + "-" + str(modifier)
 
         output = output + "=" + str(roll)
+
+        if natural == 1:
+            bgColor = "00ff00"
+        elif natural == 2:
+            bgColor = "ff0000"
+        else:
+            bgColor = "34363C"
+
         if advantageTest == 1 and howManyRolls == "2":
-            embed = discord.Embed(title="Bot Roll", color=0x874efe)
-            embed.add_field(name="Advantage roll: ", value=output, inline=False)
+            embed = discord.Embed(color=0x874efe)
+            embed.add_field(name=die + " Advantage roll: ", value=output, inline=False)
+            embed.set_thumbnail(url="https://via.placeholder.com/150/" + bgColor + "/FFFFFF/?text=" + str(roll))
+            embed.set_author(name=user, icon_url=userAvatar)
+
             await ctx.send(embed=embed)
         elif advantageTest == 2 and howManyRolls == "2":
-            embed = discord.Embed(title="Bot Roll", color=0x874efe)
-            embed.add_field(name="Disadvantage roll: ", value=output, inline=False)
+            embed = discord.Embed(color=0x874efe)
+            embed.add_field(name=die + " Disadvantage roll: ", value=output, inline=False)
+            embed.set_thumbnail(url="https://via.placeholder.com/150/" + bgColor + "/FFFFFF/?text=" + str(roll))
+            embed.set_author(name=user, icon_url=userAvatar)
+
             await ctx.send(embed=embed)
         elif advantageTest == 0:
-            embed = discord.Embed(title="Bot Roll", color=0x874efe)
-            embed.add_field(name="Roll: ", value=output, inline=False)
+            embed = discord.Embed(color=0x874efe)
+            embed.add_field(name=die + " Roll:", value=output, inline=False)
+            embed.set_thumbnail(url="https://via.placeholder.com/150/" + bgColor + "/FFFFFF/?text=" + str(roll))
+            embed.set_author(name=user, icon_url=userAvatar)
             await ctx.send(embed=embed)
 
 
