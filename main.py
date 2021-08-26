@@ -80,14 +80,16 @@ async def d(ctx, die):
     output = ""
     roll = 0
 
+    if howManyRolls == "":
+        howManyRolls = "1"
+
     # Checking if dice isn't too big
     if int(dice) > 100:
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name=die + "Roll: ", value="Too big dice to roll! Max size of dice = 100", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
-
-    elif int(howManyRolls) > 20:
+    if int(howManyRolls) > 20:
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name=die + "Roll: ", value="Too big number of rolls! Max number of rolls = 20", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
@@ -103,7 +105,7 @@ async def d(ctx, die):
             weights.append(weight)
 
         # Checking if second argument is empty (yes: roll only once, no: roll (howManyRolls) many times)
-        if howManyRolls == "" or howManyRolls == "1":
+        if howManyRolls == "1":
             if advantageTest == 1 or advantageTest == 2:
 
                 # It is not possible to do adv/disadv roll when $howManyRolls is less then 2 or more then 2
