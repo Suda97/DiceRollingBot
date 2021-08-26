@@ -86,6 +86,12 @@ async def d(ctx, die):
         embed.add_field(name=die + "Roll: ", value="Too big dice to roll!", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
+
+    elif int(howManyRolls) > 100:
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name=die + "Roll: ", value="Too big number of rolls! Try smaller then 100", inline=False)
+        embed.set_author(name=user, icon_url=userAvatar)
+        await ctx.send(embed=embed)
     else:
 
         # Creating sequence of values from dice to set their weights for random.choices
