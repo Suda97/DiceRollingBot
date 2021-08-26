@@ -81,13 +81,13 @@ async def d(ctx, die):
     roll = 0
 
     # Checking if dice isn't too big
-    if int(dice) > 200:
+    if int(dice) > 100:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name=die + "Roll: ", value="Too big dice to roll!", inline=False)
+        embed.add_field(name=die + "Roll: ", value="Too big dice to roll! Try smaller then 200", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
 
-    elif int(howManyRolls) > 100:
+    elif int(howManyRolls) > 20:
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name=die + "Roll: ", value="Too big number of rolls! Try smaller then 100", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
