@@ -7,12 +7,17 @@ from dotenv import load_dotenv
 # Loading environmental variable
 load_dotenv('discord.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
-bot = commands.Bot(command_prefix="!")
+bot = commands.Bot(command_prefix="!", activity=discord.Game(name="with Your lives!"), status=discord.Status.online)
 battle = False
 tracker = {}
 
 
-# Command for initiative and adding to tracker
+@bot.event
+async def on_ready():
+    print("Bot connected!")
+
+
+# Command for initiative roll and adding to tracker
 @bot.command()
 async def t(ctx, name="", initiative="", dexScore=""):
     member = ctx.message.author
@@ -28,6 +33,7 @@ async def t(ctx, name="", initiative="", dexScore=""):
         embed.add_field(name="Elo:", value="Tracker!", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
+
 
 # Command to turn on battle mode
 @bot.command()
