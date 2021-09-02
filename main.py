@@ -19,7 +19,7 @@ async def on_ready():
 
 # Command for initiative roll and adding to tracker
 @bot.command()
-async def t(ctx, name="", initiative="", dexScore=""):
+async def add(ctx, name="", initiative="", dexScore=""):
     member = ctx.message.author
     userAvatar = member.avatar_url
     user = ctx.message.author.display_name
@@ -31,14 +31,14 @@ async def t(ctx, name="", initiative="", dexScore=""):
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="Elo:", value="Tracker!", inline=False)
+        embed.add_field(name="Elo:", value="Tracker!" + tracker["Hermes"], inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
 
 
 # Command to turn on battle mode
 @bot.command()
-async def b(ctx, command=""):
+async def battle(ctx, command=""):
     member = ctx.message.author
     userAvatar = member.avatar_url
     user = ctx.message.author.display_name
@@ -57,7 +57,7 @@ async def b(ctx, command=""):
 
 # Command to roll the dice
 @bot.command(pass_context=True)
-async def d(ctx, die=""):
+async def r(ctx, die=""):
     # Getting username and avatar of user which sent the message
     member = ctx.message.author
     userAvatar = member.avatar_url
