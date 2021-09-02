@@ -31,7 +31,7 @@ async def add(ctx, name="", initiative="", dexScore=""):
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="Elo:", value="Tracker!" + tracker["Hermes"], inline=False)
+        embed.add_field(name="Elo:", value="Tracker!", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
 
