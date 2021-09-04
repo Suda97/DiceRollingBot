@@ -139,6 +139,7 @@ async def r(ctx, die=""):
             embed.add_field(name=die + "Roll: ", value="Too big dice to roll! Max size of dice = 100", inline=False)
             embed.set_author(name=user, icon_url=userAvatar)
             await ctx.send(embed=embed)
+            return 0
         if int(howManyRolls) > 20:
             embed = discord.Embed(color=0x874efe)
             embed.add_field(name=die + "Roll: ", value="Too big number of rolls! Max number of rolls = 20",
