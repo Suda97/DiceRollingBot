@@ -14,7 +14,7 @@ tracker = {}
 
 @bot.event
 async def on_ready():
-    print("Bot connected!")
+    print("Bot connected! PeppoHi!")
 
 
 # Command for initiative roll and adding to tracker
