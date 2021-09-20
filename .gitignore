@@ -1,3 +1,4 @@
 # Project exclude paths
 /venv/
 /discord.env
+/scratch.json
