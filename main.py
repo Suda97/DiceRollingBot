@@ -18,6 +18,21 @@ async def on_ready():
     print("Bot connected! PeppoHi!")
 
 
+@bot.command()
+async def j(ctx):
+    id = ctx.message.guild.id
+    print(id)
+    dictionary = {
+        "NameOfCharacter": {
+            "Initiative": 20,
+            "DexScore": 19,
+            "Sort": 1
+        }
+    }
+
+    with open(str(id) + ".json", "w") as outfile:
+        json.dump(dictionary, outfile)
+
 # Command for initiative roll and adding to tracker
 @bot.command()
 async def add(ctx, name="", initiative="", dexScore=""):
