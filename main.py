@@ -30,8 +30,14 @@ async def j(ctx):
         }
     }
 
+    with open(str(id) + ".json", "r") as file:
+        data = json.load(file)
+
+    data['test'] = 'data'
+
     with open(str(id) + ".json", "w") as outfile:
-        json.dump(dictionary, outfile)
+        json.dump(data, outfile)
+
 
 # Command for initiative roll and adding to tracker
 @bot.command()
