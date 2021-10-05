@@ -10,7 +10,6 @@ load_dotenv('discord.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
 bot = commands.Bot(command_prefix="!", activity=discord.Game(name="with Your lives!"), status=discord.Status.online)
 battle = False
-tracker = {}
 
 
 @bot.event
@@ -100,7 +99,7 @@ async def r(ctx, die=""):
 
     if die == "":
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="Error: ", value="Argument is empty! Try '!d 2d20'", inline=False)
+        embed.add_field(name="Error: ", value="Argument is empty! Try '!r 2d20'", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
