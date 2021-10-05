@@ -19,24 +19,36 @@ async def on_ready():
 
 
 @bot.command()
-async def j(ctx):
+async def t(ctx):
     id = ctx.message.guild.id
-    print(id)
-    dictionary = {
-        "NameOfCharacter": {
+    dictionaryone = {
+        "Hermes": {
             "Initiative": 20,
             "DexScore": 19,
             "Sort": 1
         }
     }
 
-    with open(str(id) + ".json", "r") as file:
-        data = json.load(file)
+    if os.path.isfile(str(id) + ".json"):
+        with open(str(id) + ".json", "r") as file:
+            data = json.load(file)
 
-    data['test'] = 'data'
+            dictout = data | dictionaryone
 
-    with open(str(id) + ".json", "w") as outfile:
-        json.dump(data, outfile)
+        with open(str(id) + ".json", "w") as outfile:
+            json.dump(dictout, outfile)
+
+    else:
+        with open(str(id) + ".json", "+w") as file:
+            json.dump({}, file)
+
+        with open(str(id) + ".json", "r") as file:
+            data = json.load(file)
+
+            dictout = data | dictionaryone
+
+        with open(str(id) + ".json", "w") as outfile:
+            json.dump(dictout, outfile)
 
 
 # Command for initiative roll and adding to tracker
