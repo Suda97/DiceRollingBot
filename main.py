@@ -17,39 +17,6 @@ async def on_ready():
     print("Bot connected! PeppoHi!")
 
 
-@bot.command()
-async def t(ctx):
-    id = ctx.message.guild.id
-    dictionaryone = {
-        "Hermes": {
-            "Initiative": 20,
-            "DexScore": 19,
-            "Sort": 1
-        }
-    }
-
-    if os.path.isfile(str(id) + ".json"):
-        with open(str(id) + ".json", "r") as file:
-            data = json.load(file)
-
-            dictout = data | dictionaryone
-
-        with open(str(id) + ".json", "w") as outfile:
-            json.dump(dictout, outfile)
-
-    else:
-        with open(str(id) + ".json", "+w") as file:
-            json.dump({}, file)
-
-        with open(str(id) + ".json", "r") as file:
-            data = json.load(file)
-
-            dictout = data | dictionaryone
-
-        with open(str(id) + ".json", "w") as outfile:
-            json.dump(dictout, outfile)
-
-
 # Command for initiative roll and adding to tracker
 @bot.command()
 async def add(ctx, name="", initiative="", dexScore=""):
@@ -63,6 +30,35 @@ async def add(ctx, name="", initiative="", dexScore=""):
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
+        id = ctx.message.guild.id
+        dictionaryone = {
+            "Hermes": {
+                "Initiative": 20,
+                "DexScore": 19,
+                "Sort": 1
+            }
+        }
+
+        if os.path.isfile(str(id) + ".json"):
+            with open(str(id) + ".json", "r") as file:
+                data = json.load(file)
+
+                dictout = data | dictionaryone
+
+            with open(str(id) + ".json", "w") as outfile:
+                json.dump(dictout, outfile)
+
+        else:
+            with open(str(id) + ".json", "+w") as file:
+                json.dump({}, file)
+
+            with open(str(id) + ".json", "r") as file:
+                data = json.load(file)
+
+                dictout = data | dictionaryone
+
+            with open(str(id) + ".json", "w") as outfile:
+                json.dump(dictout, outfile)
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Elo:", value="Tracker!", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
