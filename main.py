@@ -31,10 +31,11 @@ async def add(ctx, name="", initiative="", dexScore=""):
         await ctx.send(embed=embed)
     else:
         id = ctx.message.guild.id
-        dictionaryone = {
-            "Hermes": {
-                "Initiative": 20,
-                "DexScore": 19,
+        roll = random.randint(1, 20)
+        entry = {
+            name: {
+                "Initiative": roll + int(initiative),
+                "DexScore": int(dexScore),
                 "Sort": 1
             }
         }
@@ -43,7 +44,7 @@ async def add(ctx, name="", initiative="", dexScore=""):
             with open(str(id) + ".json", "r") as file:
                 data = json.load(file)
 
-                dictout = data | dictionaryone
+                dictout = data | entry
 
             with open(str(id) + ".json", "w") as outfile:
                 json.dump(dictout, outfile)
@@ -55,14 +56,19 @@ async def add(ctx, name="", initiative="", dexScore=""):
             with open(str(id) + ".json", "r") as file:
                 data = json.load(file)
 
-                dictout = data | dictionaryone
+                dictout = data | entry
 
             with open(str(id) + ".json", "w") as outfile:
                 json.dump(dictout, outfile)
+
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="Elo:", value="Tracker!", inline=False)
+        embed.add_field(name=name + " added to tracker: ", value="Initiative: (" + str(roll) + ")+" + initiative + "=" + str(roll+int(initiative)) + "\n Dexterity score: " + dexScore, inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
+        with open(str(id) + ".json", "r") as test:
+            kappa = json.load(test)
+            print(kappa.keys())
+            ## products.sort(key=lambda x: x["brand"])
 
 
 # Command to turn on battle mode
@@ -311,7 +317,6 @@ async def r(ctx, die=""):
                 embed.add_field(name=die + " Disadvantage roll: ", value=output, inline=False)
                 embed.set_thumbnail(url="https://via.placeholder.com/150/" + bgColor + "/FFFFFF/?text=" + str(roll))
                 embed.set_author(name=user, icon_url=userAvatar)
-
                 await ctx.send(embed=embed)
             elif advantageTest == 0:
                 embed = discord.Embed(color=0x874efe)
