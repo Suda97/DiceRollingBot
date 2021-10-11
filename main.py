@@ -44,10 +44,10 @@ async def add(ctx, name="", initiative="", dexScore=""):
         if os.path.isfile(str(id) + ".json"):
             with open(str(id) + ".json", "r") as file:
                 data = json.load(file)
-
                 dictout = data | entry
                 sorted_dict = OrderedDict()
                 sorted_keys = sorted(dictout, key=lambda x: (dictout[x]["Initiative"], dictout[x]["DexScore"]), reverse=True)
+
                 for key in sorted_keys:
                     sorted_dict[key] = dictout[key]
 
