@@ -25,6 +25,7 @@ async def add(ctx, name="", initiative="", dexScore=""):
     userAvatar = member.avatar_url
     user = ctx.message.author.display_name
     await ctx.message.delete()
+
     if name == "" or initiative == "" or dexScore == "":
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error: ", value="Arguments are empty!", inline=False)
