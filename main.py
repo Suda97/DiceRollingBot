@@ -4,6 +4,7 @@ import discord
 import json
 from discord.ext import commands
 from dotenv import load_dotenv
+from collections import OrderedDict
 
 # Loading environmental variable
 load_dotenv('discord.env')
@@ -35,8 +36,7 @@ async def add(ctx, name="", initiative="", dexScore=""):
         entry = {
             name: {
                 "Initiative": roll + int(initiative),
-                "DexScore": int(dexScore),
-                "Sort": 1
+                "DexScore": int(dexScore)
             }
         }
 
@@ -45,9 +45,13 @@ async def add(ctx, name="", initiative="", dexScore=""):
                 data = json.load(file)
 
                 dictout = data | entry
+                sorted_dict = OrderedDict()
+                sorted_keys = sorted(dictout, key=lambda x: (dictout[x]["Initiative"], dictout[x]["DexScore"]), reverse=True)
+                for key in sorted_keys:
+                    sorted_dict[key] = dictout[key]
 
             with open(str(id) + ".json", "w") as outfile:
-                json.dump(dictout, outfile)
+                json.dump(sorted_dict, outfile)
 
         else:
             with open(str(id) + ".json", "+w") as file:
@@ -65,11 +69,6 @@ async def add(ctx, name="", initiative="", dexScore=""):
         embed.add_field(name=name + " added to tracker: ", value="Initiative: (" + str(roll) + ")+" + initiative + "=" + str(roll+int(initiative)) + "\n Dexterity score: " + dexScore, inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
-        with open(str(id) + ".json", "r") as test:
-            kappa = json.load(test)
-            print(kappa.keys())
-            ## products.sort(key=lambda x: x["brand"])
-
 
 # Command to turn on battle mode
 @bot.command()
