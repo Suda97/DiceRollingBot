@@ -10,7 +10,6 @@ from collections import OrderedDict
 load_dotenv('discord.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
 bot = commands.Bot(command_prefix="!", activity=discord.Game(name="with Your lives!"), status=discord.Status.online)
-battle = False
 
 
 @bot.event
@@ -41,53 +40,85 @@ async def add(ctx, name="", initiative="", dexScore=""):
             }
         }
 
-        if os.path.isfile(str(id) + ".json"):
-            with open(str(id) + ".json", "r") as file:
+        if os.path.isfile("serverfiles/" + str(id) + ".json"):
+            with open("serverfiles/" + str(id) + ".json", "r") as file:
                 data = json.load(file)
                 dictout = data | entry
                 sorted_dict = OrderedDict()
-                sorted_keys = sorted(dictout, key=lambda x: (dictout[x]["Initiative"], dictout[x]["DexScore"]), reverse=True)
-
+                sorted_keys = sorted(dictout, key=lambda x: (dictout[x]["Initiative"], dictout[x]["DexScore"]),
+                                     reverse=True)
                 for key in sorted_keys:
                     sorted_dict[key] = dictout[key]
 
-            with open(str(id) + ".json", "w") as outfile:
+            with open("serverfiles/" + str(id) + ".json", "w") as outfile:
                 json.dump(sorted_dict, outfile)
 
+            with open("serverfiles/" + str(id) + "var.json", "r") as varfile:
+                data = json.load(varfile)
+                data["maxTurns"] += 1
+
+            with open("serverfiles/" + str(id) + "var.json", "w") as outfile:
+                json.dump(data, outfile)
         else:
-            with open(str(id) + ".json", "+w") as file:
+            with open("serverfiles/" + str(id) + ".json", "+w") as file:
                 json.dump({}, file)
 
-            with open(str(id) + ".json", "r") as file:
-                data = json.load(file)
+            with open("serverfiles/" + str(id) + "var.json", "+w") as varfile:
+                json.dump({"battle": False, "turn": 0, "maxTurns": 1, "round": 0}, varfile)
 
+            with open("serverfiles/" + str(id) + ".json", "r") as file:
+                data = json.load(file)
                 dictout = data | entry
 
-            with open(str(id) + ".json", "w") as outfile:
+            with open("serverfiles/" + str(id) + ".json", "w") as outfile:
                 json.dump(dictout, outfile)
 
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name=name + " added to tracker: ", value="Initiative: (" + str(roll) + ")+" + initiative + "=" + str(roll+int(initiative)) + "\n Dexterity score: " + dexScore, inline=False)
+        embed.add_field(name=name + " added to tracker: ",
+                        value="Initiative: (" + str(roll) + ")+" + initiative + "=" + str(
+                            roll + int(initiative)) + "\n Dexterity score: " + dexScore, inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
 
+
 # Command to turn on battle mode
 @bot.command()
-async def battle(ctx, command=""):
+async def battle(ctx):
+    id = ctx.message.guild.id
     member = ctx.message.author
     userAvatar = member.avatar_url
     user = ctx.message.author.display_name
     await ctx.message.delete()
-    if command == "":
+    if not os.path.isfile("serverfiles/" + str(id) + ".json"):
+        with open("serverfiles/" + str(id) + ".json", "+w") as file:
+            json.dump({}, file)
+
+        with open("serverfiles/" + str(id) + "var.json", "+w") as varfile:
+            json.dump({"battle": False, "turn": 0, "maxTurns": 0, "round": 0}, varfile)
+
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="Error: ", value="Arguments are empty!", inline=False)
+        embed.add_field(name="BATTLE!", value="Variable files created!", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
-        embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="Halko!", value="Battle mode development! " + command, inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
-        await ctx.send(embed=embed)
+        with open("serverfiles/" + str(id) + "var.json", "r") as varfile:
+            data = json.load(varfile)
+        if data["battle"]:
+            data["battle"] = False
+            with open("serverfiles/" + str(id) + "var.json", "w") as outfile:
+                json.dump(data, outfile)
+            embed = discord.Embed(color=0x874efe)
+            embed.add_field(name="BATTLE!", value="It's the end...", inline=False)
+            embed.set_author(name=user, icon_url=userAvatar)
+            await ctx.send(embed=embed)
+        else:
+            data["battle"] = True
+            with open("serverfiles/" + str(id) + "var.json", "w") as outfile:
+                json.dump(data, outfile)
+            embed = discord.Embed(color=0x874efe)
+            embed.add_field(name="BATTLE!", value="Let the fun begin!", inline=False)
+            embed.set_author(name=user, icon_url=userAvatar)
+            await ctx.send(embed=embed)
 
 
 # Command to roll the dice
@@ -297,6 +328,7 @@ async def r(ctx, die=""):
                     output = output + "-" + str(modifier)
 
             output = output + "=" + str(roll)
+            id = ctx.message.guild.id
 
             if natural == 1:
                 bgColor = "00ff00"
@@ -310,19 +342,33 @@ async def r(ctx, die=""):
                 embed.add_field(name=die + " Advantage roll: ", value=output, inline=False)
                 embed.set_thumbnail(url="https://via.placeholder.com/150/" + bgColor + "/FFFFFF/?text=" + str(roll))
                 embed.set_author(name=user, icon_url=userAvatar)
-
+                if os.path.isfile("serverfiles/" + str(id) + "var.json"):
+                    with open("serverfiles/" + str(id) + "var.json", "r") as varfile:
+                        data = json.load(varfile)
+                    if data["battle"]:
+                        embed.set_footer(text="Halko to stoopka przy battle modzie!")
                 await ctx.send(embed=embed)
             elif advantageTest == 2 and howManyRolls == "2":
                 embed = discord.Embed(color=0x874efe)
                 embed.add_field(name=die + " Disadvantage roll: ", value=output, inline=False)
                 embed.set_thumbnail(url="https://via.placeholder.com/150/" + bgColor + "/FFFFFF/?text=" + str(roll))
                 embed.set_author(name=user, icon_url=userAvatar)
+                if os.path.isfile("serverfiles/" + str(id) + "var.json"):
+                    with open("serverfiles/" + str(id) + "var.json", "r") as varfile:
+                        data = json.load(varfile)
+                    if data["battle"]:
+                        embed.set_footer(text="Halko to stoopka przy battle modzie!")
                 await ctx.send(embed=embed)
             elif advantageTest == 0:
                 embed = discord.Embed(color=0x874efe)
                 embed.add_field(name=die + " Roll:", value=output, inline=False)
                 embed.set_thumbnail(url="https://via.placeholder.com/150/" + bgColor + "/FFFFFF/?text=" + str(roll))
                 embed.set_author(name=user, icon_url=userAvatar)
+                if os.path.isfile("serverfiles/" + str(id) + "var.json"):
+                    with open("serverfiles/" + str(id) + "var.json", "r") as varfile:
+                        data = json.load(varfile)
+                    if data["battle"]:
+                        embed.set_footer(text="Halko to stoopka przy battle modzie!")
                 await ctx.send(embed=embed)
 
 
