@@ -17,6 +17,21 @@ async def on_ready():
     print("Bot connected! PeppoHi!")
 
 
+@bot.command()
+async def tracker(ctx):
+    member = ctx.message.author
+    userAvatar = member.avatar_url
+    user = ctx.message.author.display_name
+    await ctx.message.delete()
+    serverid = ctx.message.guild.id
+
+    if not os.path.isfile("serverfiles/" + str(serverid) + ".json"):
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="Error: ", value="Tracker is empty!", inline=False)
+        embed.set_author(name=user, icon_url=userAvatar)
+        await ctx.send(embed=embed)
+
+
 # Command for initiative roll and adding to tracker
 @bot.command()
 async def add(ctx, name="", initiative="", dexScore=""):
@@ -31,7 +46,7 @@ async def add(ctx, name="", initiative="", dexScore=""):
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
-        id = ctx.message.guild.id
+        serverid = ctx.message.guild.id
         roll = random.randint(1, 20)
         entry = {
             name: {
@@ -40,8 +55,8 @@ async def add(ctx, name="", initiative="", dexScore=""):
             }
         }
 
-        if os.path.isfile("serverfiles/" + str(id) + ".json"):
-            with open("serverfiles/" + str(id) + ".json", "r") as file:
+        if os.path.isfile("serverfiles/" + str(serverid) + ".json"):
+            with open("serverfiles/" + str(serverid) + ".json", "r") as file:
                 data = json.load(file)
                 dictout = data | entry
                 sorted_dict = OrderedDict()
@@ -50,27 +65,27 @@ async def add(ctx, name="", initiative="", dexScore=""):
                 for key in sorted_keys:
                     sorted_dict[key] = dictout[key]
 
-            with open("serverfiles/" + str(id) + ".json", "w") as outfile:
+            with open("serverfiles/" + str(serverid) + ".json", "w") as outfile:
                 json.dump(sorted_dict, outfile)
 
-            with open("serverfiles/" + str(id) + "var.json", "r") as varfile:
+            with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
                 data = json.load(varfile)
                 data["maxTurns"] += 1
 
-            with open("serverfiles/" + str(id) + "var.json", "w") as outfile:
+            with open("serverfiles/" + str(serverid) + "var.json", "w") as outfile:
                 json.dump(data, outfile)
         else:
-            with open("serverfiles/" + str(id) + ".json", "+w") as file:
+            with open("serverfiles/" + str(serverid) + ".json", "+w") as file:
                 json.dump({}, file)
 
-            with open("serverfiles/" + str(id) + "var.json", "+w") as varfile:
+            with open("serverfiles/" + str(serverid) + "var.json", "+w") as varfile:
                 json.dump({"battle": False, "turn": 0, "maxTurns": 1, "round": 0}, varfile)
 
-            with open("serverfiles/" + str(id) + ".json", "r") as file:
+            with open("serverfiles/" + str(serverid) + ".json", "r") as file:
                 data = json.load(file)
                 dictout = data | entry
 
-            with open("serverfiles/" + str(id) + ".json", "w") as outfile:
+            with open("serverfiles/" + str(serverid) + ".json", "w") as outfile:
                 json.dump(dictout, outfile)
 
         embed = discord.Embed(color=0x874efe)
@@ -84,16 +99,16 @@ async def add(ctx, name="", initiative="", dexScore=""):
 # Command to turn on battle mode
 @bot.command()
 async def battle(ctx):
-    id = ctx.message.guild.id
+    serverid = ctx.message.guild.id
     member = ctx.message.author
     userAvatar = member.avatar_url
     user = ctx.message.author.display_name
     await ctx.message.delete()
-    if not os.path.isfile("serverfiles/" + str(id) + ".json"):
-        with open("serverfiles/" + str(id) + ".json", "+w") as file:
+    if not os.path.isfile("serverfiles/" + str(serverid) + ".json"):
+        with open("serverfiles/" + str(serverid) + ".json", "+w") as file:
             json.dump({}, file)
 
-        with open("serverfiles/" + str(id) + "var.json", "+w") as varfile:
+        with open("serverfiles/" + str(serverid) + "var.json", "+w") as varfile:
             json.dump({"battle": False, "turn": 0, "maxTurns": 0, "round": 0}, varfile)
 
         embed = discord.Embed(color=0x874efe)
@@ -101,11 +116,11 @@ async def battle(ctx):
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
-        with open("serverfiles/" + str(id) + "var.json", "r") as varfile:
+        with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
             data = json.load(varfile)
         if data["battle"]:
             data["battle"] = False
-            with open("serverfiles/" + str(id) + "var.json", "w") as outfile:
+            with open("serverfiles/" + str(serverid) + "var.json", "w") as outfile:
                 json.dump(data, outfile)
             embed = discord.Embed(color=0x874efe)
             embed.add_field(name="BATTLE!", value="It's the end...", inline=False)
@@ -113,7 +128,7 @@ async def battle(ctx):
             await ctx.send(embed=embed)
         else:
             data["battle"] = True
-            with open("serverfiles/" + str(id) + "var.json", "w") as outfile:
+            with open("serverfiles/" + str(serverid) + "var.json", "w") as outfile:
                 json.dump(data, outfile)
             embed = discord.Embed(color=0x874efe)
             embed.add_field(name="BATTLE!", value="Let the fun begin!", inline=False)
@@ -328,7 +343,7 @@ async def r(ctx, die=""):
                     output = output + "-" + str(modifier)
 
             output = output + "=" + str(roll)
-            id = ctx.message.guild.id
+            serverid = ctx.message.guild.id
 
             if natural == 1:
                 bgColor = "00ff00"
@@ -342,8 +357,8 @@ async def r(ctx, die=""):
                 embed.add_field(name=die + " Advantage roll: ", value=output, inline=False)
                 embed.set_thumbnail(url="https://via.placeholder.com/150/" + bgColor + "/FFFFFF/?text=" + str(roll))
                 embed.set_author(name=user, icon_url=userAvatar)
-                if os.path.isfile("serverfiles/" + str(id) + "var.json"):
-                    with open("serverfiles/" + str(id) + "var.json", "r") as varfile:
+                if os.path.isfile("serverfiles/" + str(serverid) + "var.json"):
+                    with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
                         data = json.load(varfile)
                     if data["battle"]:
                         embed.set_footer(text="Halko to stoopka przy battle modzie!")
@@ -353,8 +368,8 @@ async def r(ctx, die=""):
                 embed.add_field(name=die + " Disadvantage roll: ", value=output, inline=False)
                 embed.set_thumbnail(url="https://via.placeholder.com/150/" + bgColor + "/FFFFFF/?text=" + str(roll))
                 embed.set_author(name=user, icon_url=userAvatar)
-                if os.path.isfile("serverfiles/" + str(id) + "var.json"):
-                    with open("serverfiles/" + str(id) + "var.json", "r") as varfile:
+                if os.path.isfile("serverfiles/" + str(serverid) + "var.json"):
+                    with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
                         data = json.load(varfile)
                     if data["battle"]:
                         embed.set_footer(text="Halko to stoopka przy battle modzie!")
@@ -364,8 +379,8 @@ async def r(ctx, die=""):
                 embed.add_field(name=die + " Roll:", value=output, inline=False)
                 embed.set_thumbnail(url="https://via.placeholder.com/150/" + bgColor + "/FFFFFF/?text=" + str(roll))
                 embed.set_author(name=user, icon_url=userAvatar)
-                if os.path.isfile("serverfiles/" + str(id) + "var.json"):
-                    with open("serverfiles/" + str(id) + "var.json", "r") as varfile:
+                if os.path.isfile("serverfiles/" + str(serverid) + "var.json"):
+                    with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
                         data = json.load(varfile)
                     if data["battle"]:
                         embed.set_footer(text="Halko to stoopka przy battle modzie!")
