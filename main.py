@@ -17,6 +17,46 @@ async def on_ready():
     print("Bot connected! PeppoHi!")
 
 
+@bot.command()
+async def delete(ctx, name=""):
+    member = ctx.message.author
+    userAvatar = member.avatar_url
+    user = ctx.message.author.display_name
+    await ctx.message.delete()
+    serverid = ctx.message.guild.id
+
+    if name == "":
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="Error: ", value="Wrong command (You should give me a name)", inline=False)
+        embed.set_author(name=user, icon_url=userAvatar)
+        await ctx.send(embed=embed)
+    else:
+        with open("serverfiles/" + str(serverid) + ".json", "r") as file:
+            data = json.load(file)
+            keys = list(data.keys())
+        i = 0
+        for key in keys:
+            if name == keys[i]:
+                del data[name]
+                with open("serverfiles/" + str(serverid) + ".json", "w") as outfile:
+                    json.dump(data, outfile)
+                with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
+                    vardata = json.load(varfile)
+                    vardata["maxTurns"] -= 1
+                with open("serverfiles/" + str(serverid) + "var.json", "w") as outfile:
+                    json.dump(vardata, outfile)
+                embed = discord.Embed(color=0x874efe)
+                embed.add_field(name="Delete: ", value=name + " has been deleted from tracker!", inline=False)
+                embed.set_author(name=user, icon_url=userAvatar)
+                await ctx.send(embed=embed)
+                return 0
+            else:
+                i += 1
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="Error:", value="There is no one named: " + name + "!", inline=False)
+        embed.set_author(name=user, icon_url=userAvatar)
+        await ctx.send(embed=embed)
+
 # Command that shows tracker
 @bot.command()
 async def tracker(ctx):
@@ -25,7 +65,6 @@ async def tracker(ctx):
     user = ctx.message.author.display_name
     await ctx.message.delete()
     serverid = ctx.message.guild.id
-
     if not os.path.isfile("serverfiles/" + str(serverid) + ".json"):
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error: ", value="Tracker is empty!", inline=False)
@@ -408,7 +447,9 @@ async def r(ctx, die=""):
                     with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
                         data = json.load(varfile)
                     if data["battle"]:
-                        embed.set_footer(text="Turn: " + str(data["turn"]) + "/" + str(data["maxTurns"]) + " Round: " + str(data["round"]))
+                        embed.set_footer(
+                            text="Turn: " + str(data["turn"]) + "/" + str(data["maxTurns"]) + " Round: " + str(
+                                data["round"]))
                 await ctx.send(embed=embed)
 
 
