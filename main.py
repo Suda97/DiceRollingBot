@@ -17,6 +17,7 @@ async def on_ready():
     print("Bot connected! PeppoHi!")
 
 
+# Command that shows tracker
 @bot.command()
 async def tracker(ctx):
     member = ctx.message.author
@@ -30,6 +31,25 @@ async def tracker(ctx):
         embed.add_field(name="Error: ", value="Tracker is empty!", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
+    else:
+        with open("serverfiles/" + str(serverid) + ".json", "r") as file:
+            data = json.load(file)
+            keys = list(data.keys())
+        if keys:
+            text = ""
+            counter = 0
+            for key in keys:
+                counter += 1
+                text = text + str(counter) + ". " + key + "\n"
+            embed = discord.Embed(color=0x874efe)
+            embed.add_field(name="Tracker: ", value=text, inline=False)
+            embed.set_author(name=user, icon_url=userAvatar)
+            await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(color=0x874efe)
+            embed.add_field(name="Error: ", value="Tracker is empty!", inline=False)
+            embed.set_author(name=user, icon_url=userAvatar)
+            await ctx.send(embed=embed)
 
 
 # Command for initiative roll and adding to tracker
@@ -79,7 +99,7 @@ async def add(ctx, name="", initiative="", dexScore=""):
                 json.dump({}, file)
 
             with open("serverfiles/" + str(serverid) + "var.json", "+w") as varfile:
-                json.dump({"battle": False, "turn": 0, "maxTurns": 1, "round": 0}, varfile)
+                json.dump({"battle": False, "turn": 1, "maxTurns": 1, "round": 1}, varfile)
 
             with open("serverfiles/" + str(serverid) + ".json", "r") as file:
                 data = json.load(file)
@@ -109,7 +129,7 @@ async def battle(ctx):
             json.dump({}, file)
 
         with open("serverfiles/" + str(serverid) + "var.json", "+w") as varfile:
-            json.dump({"battle": False, "turn": 0, "maxTurns": 0, "round": 0}, varfile)
+            json.dump({"battle": False, "turn": 1, "maxTurns": 1, "round": 1}, varfile)
 
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="BATTLE!", value="Variable files created!", inline=False)
@@ -120,8 +140,13 @@ async def battle(ctx):
             data = json.load(varfile)
         if data["battle"]:
             data["battle"] = False
+            data["turn"] = 1
+            data["maxTurns"] = 1
+            data["round"] = 1
             with open("serverfiles/" + str(serverid) + "var.json", "w") as outfile:
                 json.dump(data, outfile)
+            with open("serverfiles/" + str(serverid) + ".json", "w") as outfile:
+                json.dump({}, outfile)
             embed = discord.Embed(color=0x874efe)
             embed.add_field(name="BATTLE!", value="It's the end...", inline=False)
             embed.set_author(name=user, icon_url=userAvatar)
@@ -383,7 +408,7 @@ async def r(ctx, die=""):
                     with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
                         data = json.load(varfile)
                     if data["battle"]:
-                        embed.set_footer(text="Halko to stoopka przy battle modzie!")
+                        embed.set_footer(text="Turn: " + str(data["turn"]) + "/" + str(data["maxTurns"]) + " Round: " + str(data["round"]))
                 await ctx.send(embed=embed)
 
 
