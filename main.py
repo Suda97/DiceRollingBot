@@ -48,7 +48,7 @@ async def files(ctx):
     user = ctx.message.author.display_name
     await ctx.message.delete()
     serverid = ctx.message.guild.id
-    if not os.path.isfile("serverfiles"):
+    if not os.path.isdir("serverfiles"):
         os.mkdir("serverfiles")
     if not os.path.isfile("serverfiles/" + str(serverid) + ".json"):
         with open("serverfiles/" + str(serverid) + ".json", "+w") as file:
@@ -58,7 +58,7 @@ async def files(ctx):
             json.dump({"battle": False, "turn": 1, "maxTurns": 0, "round": 1}, varfile)
 
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="Command output:", value="Files created!", inline=False)
+        embed.add_field(name="`!files` output:", value="Files created!", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
@@ -130,12 +130,12 @@ async def clear(ctx):
         with open("serverfiles/" + str(serverid) + "var.json", "w") as outfile:
             json.dump({"battle": False, "turn": 1, "maxTurns": 0, "round": 1}, outfile)
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="Command output:", value="Tracker cleared and battle ended!", inline=False)
+        embed.add_field(name="`!clear` output:", value="Tracker cleared and battle ended!", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="Command output:", value="Tracker cleared!", inline=False)
+        embed.add_field(name="`!clear` output:", value="Tracker cleared!", inline=False)
         embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
 
@@ -350,7 +350,7 @@ async def battle(ctx):
             with open("serverfiles/" + str(serverid) + ".json", "w") as outfile:
                 json.dump({}, outfile)
             embed = discord.Embed(color=0x874efe)
-            embed.add_field(name="Command output:", value="It's the end...", inline=False)
+            embed.add_field(name="`!battle` output:", value="It's the end...", inline=False)
             embed.set_author(name=user, icon_url=userAvatar)
             await ctx.send(embed=embed)
         else:
