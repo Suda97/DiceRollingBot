@@ -48,6 +48,8 @@ async def files(ctx):
     user = ctx.message.author.display_name
     await ctx.message.delete()
     serverid = ctx.message.guild.id
+    if not os.path.isfile("serverfiles"):
+        os.mkdir("serverfiles")
     if not os.path.isfile("serverfiles/" + str(serverid) + ".json"):
         with open("serverfiles/" + str(serverid) + ".json", "+w") as file:
             json.dump({}, file)
