@@ -20,16 +20,14 @@ async def on_ready():
 # HELP!!!!!!
 @bot.command()
 async def fate(ctx):
-    member = ctx.message.author
-    userAvatar = member.avatar_url
-    user = ctx.message.author.display_name
     await ctx.message.delete()
     embed = discord.Embed(color=0x874efe)
     embed.add_field(name="`!fate` output:",
                     value="`!fate` - to see this message;\n"
                           "`!files` - generates server JSON file (type it in as first command!);\n"
                           "`!tracker` - to see tracker;\n"
-                          "`!add [Name] [Initiative mod] [Dex score]` - to add character to the tracker (initiative roll);\n"
+                          "`!add [Name] [Initiative mod] [Dex score]` - to add character to the tracker (initiative "
+                          "roll);\n "
                           "`!delete [Name]` - to delete character from the tracker;\n"
                           "`!clear` - to clear the tracker (and end battle if it's turned on);\n"
                           "`!battle` - to turn on the battle mode (only works while tracker isn't empty);\n"
@@ -37,16 +35,12 @@ async def fate(ctx):
                           "`!r [dice]` - to roll the dice. Example: `d20`, `2d20` (two d20),"
                           "`2d20A` (advantage roll), `2d20D` (disadvantage roll), `d20+10` (roll with mod)",
                     inline=False)
-    embed.set_author(name=user, icon_url=userAvatar)
     await ctx.send(embed=embed)
 
 
 # Command which is used to generate server JSON files
 @bot.command()
 async def files(ctx):
-    member = ctx.message.author
-    userAvatar = member.avatar_url
-    user = ctx.message.author.display_name
     await ctx.message.delete()
     serverid = ctx.message.guild.id
     if not os.path.isdir("serverfiles"):
@@ -60,12 +54,10 @@ async def files(ctx):
 
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="`!files` output:", value="Files created!", inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error:", value="Files already exist!", inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
 
 
@@ -83,12 +75,10 @@ async def done(ctx):
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error:", value="Tracker is empty!\nType `!add [Name] [Initiative mod] [Dex score]` to "
                                              "add character to the tracker.", inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     elif not data["battle"]:
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error:", value="Battle mode is turned off!\nType `!battle` to turn it on.", inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     if data["turn"] == data["maxTurns"]:
         data["round"] += 1
@@ -118,9 +108,6 @@ async def done(ctx):
 # Command to clear the tracker
 @bot.command()
 async def clear(ctx):
-    member = ctx.message.author
-    userAvatar = member.avatar_url
-    user = ctx.message.author.display_name
     await ctx.message.delete()
     serverid = ctx.message.guild.id
     with open("serverfiles/" + str(serverid) + ".json", "w") as outfile:
@@ -132,12 +119,10 @@ async def clear(ctx):
             json.dump({"battle": False, "turn": 1, "maxTurns": 0, "round": 1}, outfile)
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="`!clear` output:", value="Tracker cleared and battle ended!", inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="`!clear` output:", value="Tracker cleared!", inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
 
 
@@ -154,7 +139,6 @@ async def delete(ctx, name=""):
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error:", value="Missing [name] in command!\nType `!delete [name]` to delete character "
                                              "from the tracker", inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         if os.path.isfile("serverfiles/" + str(serverid) + "var.json"):
             with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
                 data = json.load(varfile)
@@ -194,7 +178,6 @@ async def delete(ctx, name=""):
                 i += 1
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error:", value="There is no character named: `" + name + "`!", inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         if os.path.isfile("serverfiles/" + str(serverid) + "var.json"):
             with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
                 data = json.load(varfile)
@@ -217,7 +200,6 @@ async def tracker(ctx):
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error:", value="Cannot find server files!\nType `!files` to generate server files.",
                         inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
         with open("serverfiles/" + str(serverid) + ".json", "r") as file:
@@ -244,7 +226,6 @@ async def tracker(ctx):
             embed = discord.Embed(color=0x874efe)
             embed.add_field(name="Error:", value="Tracker is empty!\nType `!add [Name] [Initiative mod] [Dex score]` "
                                                  "to add character to the tracker.", inline=False)
-            embed.set_author(name=user, icon_url=userAvatar)
             await ctx.send(embed=embed)
 
 
@@ -260,7 +241,6 @@ async def add(ctx, name="", initiative="", dexScore=""):
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error:", value="Arguments are empty!\nType `!add [Name] [Initiative mod] [Dex score]` to "
                                              "add character to the tracker.", inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         serverid = ctx.message.guild.id
         if os.path.isfile("serverfiles/" + str(serverid) + "var.json"):
             with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
@@ -340,7 +320,6 @@ async def battle(ctx):
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error:", value="Cannot find server files!\n Type `!files` to generate server files.",
                         inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         await ctx.send(embed=embed)
     else:
         with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
@@ -352,7 +331,6 @@ async def battle(ctx):
                 json.dump({}, outfile)
             embed = discord.Embed(color=0x874efe)
             embed.add_field(name="`!battle` output:", value="It's the end...", inline=False)
-            embed.set_author(name=user, icon_url=userAvatar)
             await ctx.send(embed=embed)
         else:
             with open("serverfiles/" + str(serverid) + ".json", "r") as file:
@@ -382,7 +360,6 @@ async def battle(ctx):
                 embed = discord.Embed(color=0x874efe)
                 embed.add_field(name="Error:", value="Tracker is empty!\nType `!add [Name] [Initiative mod] [Dex "
                                                      "score]` to add character to the tracker.", inline=False)
-                embed.set_author(name=user, icon_url=userAvatar)
                 await ctx.send(embed=embed)
 
 
@@ -398,7 +375,6 @@ async def r(ctx, die=""):
     if die == "":
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="Error:", value="Argument is empty!\n Type `!r 2d20` to roll the dice", inline=False)
-        embed.set_author(name=user, icon_url=userAvatar)
         serverid = ctx.message.guild.id
         if os.path.isfile("serverfiles/" + str(serverid) + "var.json"):
             with open("serverfiles/" + str(serverid) + "var.json", "r") as varfile:
