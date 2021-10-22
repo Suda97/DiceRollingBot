@@ -6,6 +6,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from collections import OrderedDict
 
+
 # Loading environmental variable
 load_dotenv('discord.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -35,7 +36,8 @@ async def fate(ctx):
                           "`!battle` - to turn on the battle mode (only works while tracker isn't empty);\n"
                           "`!done` - to end turn in battle mode;\n"
                           "`!r [dice]` - to roll the dice. Example: `d20`, `2d20` (two d20),"
-                          "`2d20A` (advantage roll), `2d20D` (disadvantage roll), `d20+10` (roll with mod)", inline=False)
+                          "`2d20A` (advantage roll), `2d20D` (disadvantage roll), `d20+10` (roll with mod)",
+                    inline=False)
     embed.set_author(name=user, icon_url=userAvatar)
     await ctx.send(embed=embed)
 
@@ -682,6 +684,32 @@ async def r(ctx, die=""):
                             text="Turn: " + str(data["turn"]) + "/" + str(data["maxTurns"]) + " | Round: " + str(
                                 data["round"]))
                 await ctx.send(embed=embed)
+
+
+# Global error handling
+@bot.event
+async def on_command_error(ctx, error):
+    await ctx.message.delete()
+    if isinstance(error, commands.CommandNotFound):
+        msg = "Command doesn't exist.\nType `!fate` for list of all commands!"
+    elif isinstance(error, commands.UserInputError):
+        msg = "Something went wrong with Your input!"
+    elif isinstance(error, commands.CommandInvokeError):
+        msg = "Something went wrong with Your input!"
+    else:
+        msg = "Oh... Something went wrong and while running the command"
+    embed = discord.Embed(color=0x874efe)
+    embed.add_field(name="Error:", value=msg, inline=False)
+    await ctx.send(embed=embed)
+
+
+########################################################################################################################
+######################################### END OF ROLLING DICE SECTION ##################################################
+########################################################################################################################
+
+@bot.command()
+async def vc(ctx):
+    print("kappa")
 
 
 bot.run(TOKEN)
