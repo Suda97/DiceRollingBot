@@ -6,7 +6,6 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from collections import OrderedDict
 
-
 # Loading environmental variable
 load_dotenv('discord.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -388,7 +387,7 @@ async def battle(ctx):
 
 
 # Command to roll the dice
-@bot.command(pass_context=True)
+@bot.command()
 async def r(ctx, die=""):
     # Getting username and avatar of user which sent the message
     member = ctx.message.author
@@ -708,8 +707,22 @@ async def on_command_error(ctx, error):
 ########################################################################################################################
 
 @bot.command()
-async def vc(ctx):
-    print("kappa")
+async def join(ctx):
+    await ctx.message.delete()
+    voiceCh = ctx.author.voice.channel
+    await voiceCh.connect()
+    embed = discord.Embed(color=0x874efe)
+    embed.add_field(name="`!join` output:", value="Connected to voice channel: " + str(voiceCh), inline=False)
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+async def leave(ctx):
+    await ctx.message.delete()
+    await ctx.voice_client.disconnect()
+    embed = discord.Embed(color=0x874efe)
+    embed.add_field(name="`!leave` output:", value="Disconnected from voice channel.", inline=False)
+    await ctx.send(embed=embed)
 
 
 bot.run(TOKEN)
