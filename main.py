@@ -701,4 +701,12 @@ async def leave(ctx):
     await ctx.send(embed=embed)
 
 
+@bot.command()
+async def play(ctx, link):
+    await ctx.message.delete()
+    embed = discord.Embed(color=0x874efe)
+    embed.add_field(name="play!", value="Now playing", inline=False)
+    await ctx.send(embed=embed)
+
+
 bot.run(TOKEN)
