@@ -701,13 +701,13 @@ async def leave(ctx):
 
 
 @bot.command()
-async def play(ctx, dir):
+async def play(ctx, direc):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
     embed = discord.Embed(color=0x874efe)
-    embed.add_field(name="Play!", value="Now playing: " + dir + "\n Type `!stop` to stop", inline=False)
+    embed.add_field(name="Play!", value="Now playing: " + direc + "\n Type `!stop` to stop", inline=False)
     await ctx.send(embed=embed)
-    src = discord.FFmpegPCMAudio(dir, executable='/usr/local/bin/ffmpeg')
+    src = discord.FFmpegPCMAudio(direc, executable='/usr/local/bin/ffmpeg')
     vcClient.play(source=src, after=None)
 
 
