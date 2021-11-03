@@ -15,3 +15,5 @@ It's just a discord bot which rolls the dice... FOR NOW!<br />
 !join - bot will join users voice channel;<br />
 !play [directory of mp3] - starts playing given mp3 file;<br />
 !leave - bot will disconnect from voice channel;<br />
+!pause - you know what it does;<br />
+!resume - you know what it does;<br />
