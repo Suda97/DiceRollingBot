@@ -705,10 +705,29 @@ async def play(ctx, dir):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
     embed = discord.Embed(color=0x874efe)
-    embed.add_field(name="Play!", value="Now playing", inline=False)
+    embed.add_field(name="Play!", value="Now playing: " + dir + "\n Type `!stop` to stop", inline=False)
     await ctx.send(embed=embed)
     src = discord.FFmpegPCMAudio(dir, executable='/usr/local/bin/ffmpeg')
     vcClient.play(source=src, after=None)
 
+
+@bot.command()
+async def stop(ctx):
+    vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
+    await ctx.message.delete()
+    embed = discord.Embed(color=0x874efe)
+    embed.add_field(name="Stop!", value="Music stopped!\nType `!resume` to resume.", inline=False)
+    await ctx.send(embed=embed)
+    vcClient.stop()
+
+
+@bot.command()
+async def resume(ctx):
+    vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guid)
+    await ctx.message.delete()
+    embed = discord.Embed(color=0x874efe)
+    embed.add_field(name="Resume!", value="Music resumed!\nType `!stop` to stop.", inline=False)
+    await ctx.send(embed=embed)
+    vcClient.resume()
 
 bot.run(TOKEN)
