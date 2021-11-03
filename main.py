@@ -685,7 +685,7 @@ async def on_command_error(ctx, error):
 async def join(ctx):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
-    if not vcClient.is_connected():
+    if vcClient is None:
         voiceCh = ctx.author.voice.channel
         await voiceCh.connect()
         embed = discord.Embed(color=0x874efe)
@@ -703,31 +703,40 @@ async def join(ctx):
 async def leave(ctx):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
-    if vcClient.is_connected():
+    if not vcClient is None:
         await ctx.voice_client.disconnect()
         embed = discord.Embed(color=0x874efe)
         embed.add_field(name="`!leave` output:", value="Disconnected from voice chat.", inline=False)
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!leave` output:", value="Bot not connected to voice chat\n Type `!join` to connect.", inline=False)
+        embed.add_field(name="`!leave` output:", value="Bot not connected to voice chat\n Type `!join` to connect.",
+                        inline=False)
         await ctx.send(embed=embed)
 
 
 @bot.command()
-async def play(ctx, direc):
+async def play(ctx, direc=None):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
-    if vcClient.is_connected():
+    if direc is None:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!play` output:", value="Now playing: " + direc + "\n Type `!pause` to pause.", inline=False)
+        embed.add_field(name="`!play` output:", value="Directory is empty!",
+                        inline=False)
         await ctx.send(embed=embed)
-        src = discord.FFmpegPCMAudio(direc, executable='/usr/local/bin/ffmpeg')
-        vcClient.play(source=src, after=None)
     else:
-        embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!play` output:", value="Bot not connected to voice chat\n Type `!join` to connect.", inline=False)
-        await ctx.send(embed=embed)
+        if not vcClient is None:
+            embed = discord.Embed(color=0x874efe)
+            embed.add_field(name="`!play` output:", value="Now playing: " + direc + "\n Type `!pause` to pause.",
+                            inline=False)
+            await ctx.send(embed=embed)
+            src = discord.FFmpegPCMAudio(direc, executable='/usr/local/bin/ffmpeg')
+            vcClient.play(source=src, after=None)
+        else:
+            embed = discord.Embed(color=0x874efe)
+            embed.add_field(name="`!play` output:", value="Bot not connected to voice chat\n Type `!join` to connect.",
+                            inline=False)
+            await ctx.send(embed=embed)
 
 
 @bot.command()
@@ -746,7 +755,7 @@ async def pause(ctx):
         await ctx.send(embed=embed)
     else:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!pause` output:", value="Music isn't playing.", inline=False)
+        embed.add_field(name="`!pause` output:", value="Music isn't playing.\nType `!resume` to resume.", inline=False)
         await ctx.send(embed=embed)
 
 
