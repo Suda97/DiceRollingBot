@@ -683,51 +683,91 @@ async def on_command_error(ctx, error):
 
 @bot.command()
 async def join(ctx):
+    vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
-    voiceCh = ctx.author.voice.channel
-    await voiceCh.connect()
-    embed = discord.Embed(color=0x874efe)
-    embed.add_field(name="`!join` output:", value="Connected to voice channel: " + str(voiceCh), inline=False)
-    await ctx.send(embed=embed)
+    if not vcClient.is_connected():
+        voiceCh = ctx.author.voice.channel
+        await voiceCh.connect()
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!join` output:", value="Connected to voice chat: " + str(voiceCh), inline=False)
+        await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!join` output:", value="Bot is already connected to voice chat\n Type `!leave` to "
+                                                      "disconnect.",
+                        inline=False)
+        await ctx.send(embed=embed)
 
 
 @bot.command()
 async def leave(ctx):
+    vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
-    await ctx.voice_client.disconnect()
-    embed = discord.Embed(color=0x874efe)
-    embed.add_field(name="`!leave` output:", value="Disconnected from voice channel.", inline=False)
-    await ctx.send(embed=embed)
+    if vcClient.is_connected():
+        await ctx.voice_client.disconnect()
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!leave` output:", value="Disconnected from voice chat.", inline=False)
+        await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!leave` output:", value="Bot not connected to voice chat\n Type `!join` to connect.", inline=False)
+        await ctx.send(embed=embed)
 
 
 @bot.command()
 async def play(ctx, direc):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
-    embed = discord.Embed(color=0x874efe)
-    embed.add_field(name="Play!", value="Now playing: " + direc + "\n Type `!stop` to stop", inline=False)
-    await ctx.send(embed=embed)
-    src = discord.FFmpegPCMAudio(direc, executable='/usr/local/bin/ffmpeg')
-    vcClient.play(source=src, after=None)
+    if vcClient.is_connected():
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!play` output:", value="Now playing: " + direc + "\n Type `!pause` to pause.", inline=False)
+        await ctx.send(embed=embed)
+        src = discord.FFmpegPCMAudio(direc, executable='/usr/local/bin/ffmpeg')
+        vcClient.play(source=src, after=None)
+    else:
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!play` output:", value="Bot not connected to voice chat\n Type `!join` to connect.", inline=False)
+        await ctx.send(embed=embed)
 
 
 @bot.command()
-async def stop(ctx):
+async def pause(ctx):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
-    embed = discord.Embed(color=0x874efe)
-    embed.add_field(name="Stop!", value="Music stopped!\nType `!resume` to resume.", inline=False)
-    await ctx.send(embed=embed)
-    vcClient.stop()
+    if vcClient.is_playing():
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!pause` output:", value="Music paused!\nType `!resume` to resume.", inline=False)
+        await ctx.send(embed=embed)
+        vcClient.pause()
+    elif not vcClient.is_connected():
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!play` output:", value="Bot not connected to voice chat\n Type `!join` to connect.",
+                        inline=False)
+        await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!pause` output:", value="Music isn't playing.", inline=False)
+        await ctx.send(embed=embed)
 
 
 @bot.command()
 async def resume(ctx):
-    vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guid)
+    vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
-    embed = discord.Embed(color=0x874efe)
-    embed.add_field(name="Resume!", value="Music resumed!\nType `!stop` to stop.", inline=False)
-    await ctx.send(embed=embed)
-    vcClient.resume()
+    if vcClient.is_paused():
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!resume` output:", value="Music resumed!\nType `!pause` to stop.", inline=False)
+        await ctx.send(embed=embed)
+        vcClient.resume()
+    elif not vcClient.is_connected():
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!play` output:", value="Bot not connected to voice chat\n Type `!join` to connect.",
+                        inline=False)
+        await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(color=0x874efe)
+        embed.add_field(name="`!resume` output:", value="Music isn't paused.", inline=False)
+        await ctx.send(embed=embed)
+
 
 bot.run(TOKEN)
