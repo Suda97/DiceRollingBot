@@ -1,4 +1,3 @@
-import asyncio
 import os
 import random
 import discord
@@ -662,10 +661,9 @@ async def r(ctx, die=""):
                 await ctx.send(embed=embed)
 
 
-# Global error handling
+'''# Global error handling
 @bot.event
 async def on_command_error(ctx, error):
-    await ctx.message.delete()
     if isinstance(error, commands.CommandNotFound):
         msg = "Command doesn't exist.\nType `!fate` for list of all commands!"
     elif isinstance(error, commands.UserInputError):
@@ -676,7 +674,7 @@ async def on_command_error(ctx, error):
         msg = "Oh... Something went wrong and while running the command"
     embed = discord.Embed(color=0x874efe)
     embed.add_field(name="Error:", value=msg, inline=False)
-    await ctx.send(embed=embed)
+    await ctx.send(embed=embed)'''
 
 
 ########################################################################################################################
@@ -703,11 +701,14 @@ async def leave(ctx):
 
 
 @bot.command()
-async def play(ctx, link):
+async def play(ctx):
+    vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
     embed = discord.Embed(color=0x874efe)
-    embed.add_field(name="play!", value="Now playing", inline=False)
+    embed.add_field(name="Play!", value="Now playing", inline=False)
     await ctx.send(embed=embed)
+    src = discord.FFmpegPCMAudio('music.mp3', executable='/usr/local/bin/ffmpeg')
+    vcClient.play(source=src, after=None)
 
 
 bot.run(TOKEN)
