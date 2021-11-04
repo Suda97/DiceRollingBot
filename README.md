@@ -1,6 +1,8 @@
-# DiceRollingBot (Fate) v1.1.2
+# DiceRollingBot (Fate) v1.2
 Simple dice rolling bot for discord (for dnd and stuff). Trying to improve my Python skills!<br />	
 It's just a discord bot which rolls the dice... FOR NOW!<br />
+Thanks to https://github.com/Rapptz/discord.py/blob/master/examples/basic_voice.py bot now can play music from YouTube 
+videos
 <h2>Text channel commands:</h2>
 !fate - to see this message;<br />
 !files - generates server JSON file (type it in as first command!);<br />
