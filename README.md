@@ -11,7 +11,7 @@ https://github.com/Rapptz/discord.py/blob/master/examples/basic_voice.py
 !add [Name] [Initiative mod] [Dex score] - Adds character to the battle tracker (initiative roll);<br />
 !delete [Name] - Deletes character from the battle tracker;<br />
 !clear - Clears the battle tracker (and end battle if it's turned on);<br />
-!battle - Turns on battle mode (only works while tracker isn't empty);<br />
+!battle - Turns on/off battle mode (only works while tracker isn't empty);<br />
 !done - Ends turn of a player while in battle mode;<br />
 !r [dice] - Rolls the dice. Example: d20, 2d20 (two d20), 2d20A (advantage roll), 2d20D (disadvantage roll), d20+10 (roll with mod);<br />
 <h2>Voice channel commands:</h2>

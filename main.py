@@ -32,14 +32,19 @@ async def fate(ctx):
                     value="`!fate` - Shows this message;\n"
                           "`!files` - Generates server JSON file (type it in as first command!);\n"
                           "`!tracker` - Shows battle tracker;\n"
-                          "`!add [Name] [Initiative mod] [Dex score]` - to add character to the tracker (initiative "
-                          "roll);\n "
-                          "`!delete [Name]` - to delete character from the tracker;\n"
-                          "`!clear` - to clear the tracker (and end battle if it's turned on);\n"
-                          "`!battle` - to turn on the battle mode (only works while tracker isn't empty);\n"
-                          "`!done` - to end turn in battle mode;\n"
-                          "`!r [dice]` - to roll the dice. Example: `d20`, `2d20` (two d20),"
-                          "`2d20A` (advantage roll), `2d20D` (disadvantage roll), `d20+10` (roll with mod)",
+                          "`!add [Name] [Initiative mod] [Dex score]` - Adds character to the battle tracker ("
+                          "initiative roll);\n "
+                          "`!delete [Name]` - Deletes character from the battle tracker;\n"
+                          "`!clear` - Clears the battle tracker (and end battle if it's turned on);\n"
+                          "`!battle` - Turns on/off battle mode (only works while tracker isn't empty);\n"
+                          "`!done` - Ends turn of a player while in battle mode;\n"
+                          "`!r [dice]` - Rolls the dice. Example: d20, 2d20 (two d20), 2d20A (advantage roll), "
+                          "2d20D (disadvantage roll), d20+10 (roll with mod);\n"
+                          "`!join` - Connects bot to the voice channel;\n"
+                          "`!play [url]` - Starts to play music from given YouTube URL;\n"
+                          "`!leave` - Disconnects bot from the voice channel (stops the music);\n"
+                          "`!pause` - Pauses playback of music;\n"
+                          "`!resume` - Resumes playback of music;",
                     inline=False)
     await ctx.send(embed=embed)
 
