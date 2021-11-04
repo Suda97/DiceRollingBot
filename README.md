@@ -5,18 +5,18 @@ It's just a discord bot which rolls the dice... FOR NOW!<br />
 1.2v Fate is capable of playing music from YouTube, thanks to <br /> 
 https://github.com/Rapptz/discord.py/blob/master/examples/basic_voice.py
 <h2>Text channel commands:</h2>
-!fate - to see this message;<br />
-!files - generates server JSON file (type it in as first command!);<br />
-!tracker - to see tracker;<br />
-!add [Name] [Initiative mod] [Dex score] - to add character to the tracker (initiative roll);<br />
-!delete [Name] - to delete character from the tracker;<br />
-!clear - to clear the tracker (and end battle if it's turned on);<br />
-!battle - to turn on the battle mode (only works while tracker isn't empty);<br />
-!done - to end turn in battle mode;<br />
-!r [dice] - to roll the dice. Example: d20, 2d20 (two d20), 2d20A (advantage roll), 2d20D (disadvantage roll), d20+10 (roll with mod);<br />
+!fate - Shows this message;<br />
+!files - Generates server JSON file (type it in as first command!);<br />
+!tracker - Shows battle tracker;<br />
+!add [Name] [Initiative mod] [Dex score] - Adds character to the battle tracker (initiative roll);<br />
+!delete [Name] - Deletes character from the battle tracker;<br />
+!clear - Clears the battle tracker (and end battle if it's turned on);<br />
+!battle - Turns on battle mode (only works while tracker isn't empty);<br />
+!done - Ends turn of a player while in battle mode;<br />
+!r [dice] - Rolls the dice. Example: d20, 2d20 (two d20), 2d20A (advantage roll), 2d20D (disadvantage roll), d20+10 (roll with mod);<br />
 <h2>Voice channel commands:</h2>
-!join - bot will join users voice channel;<br />
-!play [url] - starts playing music from given YouTube URL;<br />
-!leave - bot will disconnect from voice channel;<br />
-!pause - you know what it does;<br />
-!resume - you know what it does;<br />
+!join - Connects bot to the voice channel;<br />
+!play [url] - Starts to play music from given YouTube URL;<br />
+!leave - Disconnects bot from the voice channel (stops the music);<br />
+!pause - Pauses playback of music;<br />
+!resume - Resumes playback of music;<br />

@@ -11,7 +11,10 @@ from collections import OrderedDict
 # Loading environmental variable
 load_dotenv('discord.env')
 TOKEN = os.getenv('DISCORD_TOKEN')
-bot = commands.Bot(command_prefix="!", activity=discord.Game(name="with Your lives!"), status=discord.Status.online)
+bot = commands.Bot(command_prefix="!",
+                   activity=discord.Game(name="with Your lives!"),
+                   status=discord.Status.online,
+                   help_command=commands.DefaultHelpCommand(no_category='Commands'))
 
 
 @bot.event
@@ -20,14 +23,15 @@ async def on_ready():
 
 
 # HELP!!!!!!
-@bot.command()
+@bot.command(brief="Shows this message",
+             description="Shows this message")
 async def fate(ctx):
     await ctx.message.delete()
     embed = discord.Embed(color=0x874efe)
     embed.add_field(name="`!fate` output:",
-                    value="`!fate` - to see this message;\n"
-                          "`!files` - generates server JSON file (type it in as first command!);\n"
-                          "`!tracker` - to see tracker;\n"
+                    value="`!fate` - Shows this message;\n"
+                          "`!files` - Generates server JSON file (type it in as first command!);\n"
+                          "`!tracker` - Shows battle tracker;\n"
                           "`!add [Name] [Initiative mod] [Dex score]` - to add character to the tracker (initiative "
                           "roll);\n "
                           "`!delete [Name]` - to delete character from the tracker;\n"
@@ -41,7 +45,8 @@ async def fate(ctx):
 
 
 # Command which is used to generate server JSON files
-@bot.command()
+@bot.command(brief="Generates server JSON file",
+             description="Generates server JSON file (type it in as first command!)")
 async def files(ctx):
     await ctx.message.delete()
     serverid = ctx.message.guild.id
@@ -67,7 +72,8 @@ async def files(ctx):
 
 
 # Command that is used to end the turn of a player
-@bot.command()
+@bot.command(brief="Ends turn of a player while in battle mode",
+             description="Ends turn of a player while in battle mode")
 async def done(ctx):
     member = ctx.message.author
     userAvatar = member.avatar_url
@@ -124,7 +130,8 @@ async def done(ctx):
 
 
 # Command to clear the tracker
-@bot.command()
+@bot.command(brief="Clears the battle tracker",
+             description="Clears the battle tracker (and end battle if it's turned on)")
 async def clear(ctx):
     await ctx.message.delete()
     serverid = ctx.message.guild.id
@@ -150,7 +157,8 @@ async def clear(ctx):
 
 
 # Command that deletes one character from the tracker
-@bot.command()
+@bot.command(brief="Deletes character from the battle tracker",
+             description="Deletes character from the battle tracker")
 async def delete(ctx, name=""):
     member = ctx.message.author
     userAvatar = member.avatar_url
@@ -228,7 +236,8 @@ async def delete(ctx, name=""):
 
 
 # Command that shows tracker
-@bot.command()
+@bot.command(brief="Shows battle tracker",
+             description="Shows battle tracker")
 async def tracker(ctx):
     member = ctx.message.author
     userAvatar = member.avatar_url
@@ -280,7 +289,8 @@ async def tracker(ctx):
 
 
 # Command for initiative roll and adding to tracker
-@bot.command()
+@bot.command(brief="Adds character to the battle tracker",
+             description="Adds character to the battle tracker (initiative roll)")
 async def add(ctx, name="", initiative="", dexScore=""):
     member = ctx.message.author
     userAvatar = member.avatar_url
@@ -368,7 +378,8 @@ async def add(ctx, name="", initiative="", dexScore=""):
 
 
 # Command to turn on battle mode
-@bot.command()
+@bot.command(brief="Turns on battle mode",
+             description="Turns on battle mode (only works while tracker isn't empty)")
 async def battle(ctx):
     serverid = ctx.message.guild.id
     member = ctx.message.author
@@ -439,7 +450,9 @@ async def battle(ctx):
 
 
 # Command to roll the dice
-@bot.command()
+@bot.command(brief="Rolls the dice",
+             description="Rolls the dice. Example: d20, 2d20 (two d20), 2d20A (advantage roll),"
+                         " 2d20D (disadvantage roll), d20+10 (roll with mod)")
 async def r(ctx, die=""):
     # Getting username and avatar of user which sent the message
     member = ctx.message.author
@@ -799,7 +812,8 @@ async def on_command_error(ctx, error):
 ########################################################################################################################
 
 
-@bot.command()
+@bot.command(brief="Connects bot to the voice channel",
+             description="Connects bot to the voice channel")
 async def join(ctx):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
@@ -819,7 +833,8 @@ async def join(ctx):
         await ctx.send(embed=embed)
 
 
-@bot.command()
+@bot.command(brief="Disconnects bot from the voice channel",
+             description="Disconnects bot from the voice channel (stops the music)")
 async def leave(ctx):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
@@ -882,7 +897,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
 
 
-@bot.command()
+@bot.command(brief="Starts to play music from given YouTube URL",
+             description="Starts to play music from given YouTube URL")
 async def play(ctx, url=None):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
 
@@ -912,7 +928,8 @@ async def play(ctx, url=None):
             await ctx.send(embed=embed)
 
 
-@bot.command()
+@bot.command(brief="Pauses playback of music",
+             description="Pauses playback of music")
 async def pause(ctx):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
@@ -936,7 +953,8 @@ async def pause(ctx):
         await ctx.send(embed=embed)
 
 
-@bot.command()
+@bot.command(brief="Resumes playback of music",
+             description="Resumes playback of music")
 async def resume(ctx):
     vcClient: discord.VoiceClient = discord.utils.get(bot.voice_clients, guild=ctx.guild)
     await ctx.message.delete()
