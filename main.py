@@ -813,7 +813,7 @@ async def join(ctx):
 
     else:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!join` output:",
+        embed.add_field(name="Error:",
                         value="Bot is already connected to voice chat\n Type `!leave` to disconnect.",
                         inline=False)
         await ctx.send(embed=embed)
@@ -832,7 +832,7 @@ async def leave(ctx):
 
     else:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!leave` output:", value="Bot not connected to voice chat\n Type `!join` to connect.",
+        embed.add_field(name="Error:", value="Bot not connected to voice chat\n Type `!join` to connect.",
                         inline=False)
         await ctx.send(embed=embed)
 
@@ -890,7 +890,7 @@ async def play(ctx, url=None):
 
     if url is None:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!play` output:", value="URL is empty!", inline=False)
+        embed.add_field(name="Error:", value="URL is empty!", inline=False)
         await ctx.send(embed=embed)
 
     else:
@@ -907,7 +907,7 @@ async def play(ctx, url=None):
 
         else:
             embed = discord.Embed(color=0x874efe)
-            embed.add_field(name="`!play` output:", value="Bot not connected to voice chat\n Type `!join` to connect.",
+            embed.add_field(name="Error:", value="Bot not connected to voice chat\n Type `!join` to connect.",
                             inline=False)
             await ctx.send(embed=embed)
 
@@ -925,14 +925,14 @@ async def pause(ctx):
 
     elif not vcClient.is_connected():
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!play` output:",
+        embed.add_field(name="Error:",
                         value="Bot not connected to voice chat\n Type `!join` to connect.",
                         inline=False)
         await ctx.send(embed=embed)
 
     else:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!pause` output:", value="Music isn't playing.\nType `!resume` to resume.", inline=False)
+        embed.add_field(name="Error:", value="Music isn't playing.\nType `!resume` to resume.", inline=False)
         await ctx.send(embed=embed)
 
 
@@ -949,14 +949,14 @@ async def resume(ctx):
 
     elif not vcClient.is_connected():
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!play` output:",
+        embed.add_field(name="Error",
                         value="Bot not connected to voice chat\n Type `!join` to connect.",
                         inline=False)
         await ctx.send(embed=embed)
 
     else:
         embed = discord.Embed(color=0x874efe)
-        embed.add_field(name="`!resume` output:", value="Music isn't paused.", inline=False)
+        embed.add_field(name="Error:", value="Music isn't paused.", inline=False)
         await ctx.send(embed=embed)
 
 
